@@ -1,0 +1,28 @@
+{
+  "name": "uams-web/patches-pest-plugin-browser",
+  "description": "Patches UAMS-Web repositories apply to pestphp/pest-plugin-browser",
+  "type": "library",
+  "require": {
+    "pestphp/pest-plugin-browser": "5.2.0"
+  },
+  "extra": {
+    "patches": {
+      "pestphp/pest-plugin-browser": {
+        "Give each retry attempt the configured Playwright timeout instead of a hardcoded 1000ms (temporary; see UAMS-Web/uams-statamic-archive#1816)": "vendor/uams-web/patches-pest-plugin-browser/patches/pest-plugin-browser-per-attempt-timeout.patch",
+        "Start the Playwright server without a shell so Linux cannot orphan it (temporary; see UAMS-Web/uams-statamic-archive#1818)": "vendor/uams-web/patches-pest-plugin-browser/patches/pest-plugin-browser-server-no-shell.patch",
+        "Retry a navigation the Windows runner refuses with net::ERR_NO_BUFFER_SPACE (temporary; see UAMS-Web/uams-statamic#585)": "vendor/uams-web/patches-pest-plugin-browser/patches/pest-plugin-browser-navigation-no-buffer-space-retry.patch"
+      }
+    }
+  },
+  "keywords": [
+    "composer",
+    "patches",
+    "pest",
+    "browser-testing"
+  ],
+  "support": {
+    "issues": "https://github.com/UAMS-Web/patches-pest-plugin-browser/issues",
+    "source": "https://github.com/UAMS-Web/patches-pest-plugin-browser"
+  },
+  "license": "MIT"
+}
