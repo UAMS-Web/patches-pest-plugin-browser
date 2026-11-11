@@ -6,6 +6,14 @@ This package pins `pestphp/pest-plugin-browser` to exactly `5.2.0`. Every patch 
 
 ## Install
 
+This package is read from GitHub with a `vcs` repository, not from Packagist. The consumer's root `composer.json` lists it (Composer reads `repositories` only from the root project):
+
+```json
+"repositories": [
+  { "type": "vcs", "url": "https://github.com/UAMS-Web/patches-pest-plugin-browser.git" }
+]
+```
+
 An application requires it in `require` (the plugin applies a dependency's patches only from `packages` in `composer.lock`):
 
 ```bash
