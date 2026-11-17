@@ -28,7 +28,7 @@ Patch paths are relative to the consumer's root and start `vendor/uams-web/patch
 
 Applied in this order, which is the order in `composer.json`. A later patch is cut against the output of the earlier ones, so none is reordered without re-cutting those after it.
 
-- **`pest-plugin-browser-per-attempt-timeout.patch`**: Give each retry attempt the configured Playwright timeout instead of a hardcoded 1000ms (temporary; see UAMS-Web/uams-statamic-archive#1816)
+- **`pest-plugin-browser-per-attempt-timeout.patch`**: Give each retry attempt the configured Playwright timeout instead of a hardcoded 1000ms (temporary; merged upstream in pestphp/pest-plugin-browser#276, unreleased; see UAMS-Web/patches-pest-plugin-browser#2)
 - **`pest-plugin-browser-server-no-shell.patch`**: Start the Playwright server without a shell so Linux cannot orphan it (temporary; see UAMS-Web/uams-statamic-archive#1818)
 - **`pest-plugin-browser-navigation-no-buffer-space-retry.patch`**: Retry a navigation the Windows runner refuses with net::ERR_NO_BUFFER_SPACE (temporary; see UAMS-Web/uams-statamic#585)
 

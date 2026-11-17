@@ -1,47 +1,34 @@
+Temporary: drop this patch once a pest-plugin-browser release carries pestphp/pest-plugin-browser#276.
+
+diff --git a/src/Api/AwaitableWebpage.php b/src/Api/AwaitableWebpage.php
+index 466ef9a..284daff 100644
+--- a/src/Api/AwaitableWebpage.php
++++ b/src/Api/AwaitableWebpage.php
+@@ -42,6 +42,8 @@ final readonly class AwaitableWebpage
+             'keys',
+             'drag',
+             'append',
++            // submit() is a click on the form's submit button.
++            'submit',
+             // Retrying can start another load or traverse another history entry. Let
+             // Playwright wait within a single navigation attempt.
+             'navigate',
 diff --git a/src/Execution.php b/src/Execution.php
-index aba9c9b..9fbecc6 100644
+index aba9c9b..f04fad0 100644
 --- a/src/Execution.php
 +++ b/src/Execution.php
-@@ -127,7 +127,42 @@ final class Execution
+@@ -126,8 +126,14 @@ final class Execution
+         $end = hrtime(true) + ($timeout * 1_000_000);
  
          while (hrtime(true) < $end) {
++            // Each attempt gets what is left of the configured timeout, not a fixed
++            // second. An operation that fits the timeout then finishes on its first
++            // attempt instead of being cut off and run again, and the loop still ends
++            // when the timeout does.
++            $remaining = (int) max(1, ($end - hrtime(true)) / 1_000_000);
++
              try {
 -                return Playwright::usingTimeout(1_000, $callback);
-+                // Temporary: drop this patch once pest-plugin-browser separates
-+                // action execution from the assertion retry loop. Upstream report:
-+                // https://github.com/pestphp/pest/issues/1852
-+                //
-+                // Each attempt used a hardcoded 1_000ms while Configuration::timeout()
-+                // only sized the retry WINDOW, so `Playwright::setTimeout(30_000)` did
-+                // not do what its name says: every attempt was still cut off at one
-+                // second and only the final post-loop call ever saw the configured
-+                // value. Two consequences, both upstream-verified: wall-clock scaled
-+                // with the configured timeout rather than the work (a constant 2s
-+                // delay cost 5.32s at 3000ms and 14.82s at 12000ms, the loop
-+                // re-running an operation it kept truncating), and side-effecting
-+                // actions were re-executed, because a retry loop was being applied to
-+                // an operation that is not idempotent.
-+                //
-+                // Giving each attempt the configured timeout removes the truncation,
-+                // which is the root cause of BOTH: an operation that fits inside the
-+                // budget now completes on its first attempt and is never retried.
-+                // Retry itself is untouched, so an assertion waiting on an async
-+                // render still re-checks until the window closes.
-+                //
-+                // The budget is clamped to what is LEFT of the window, which is what
-+                // keeps the total bound unchanged. The loop tests its deadline only at
-+                // the top and nothing else bounds an attempt, so handing every attempt
-+                // the full timeout would let one admitted at $end - epsilon run to 2x
-+                // the timeout, and the unconditional post-loop call would then push the
-+                // ceiling to 3x. Clamping keeps the loop inside one timeout and the
-+                // final call inside another: the same ~2x ceiling as before the patch,
-+                // where the 1_000ms attempts could only overrun the window by a second.
-+                //
-+                // The first attempt is unaffected - at that point the whole window is
-+                // still remaining - so an operation that fits the budget still completes
-+                // on attempt one, which is the point of the patch.
-+                $remaining = (int) max(1, intdiv($end - hrtime(true), 1_000_000));
-+
 +                return Playwright::usingTimeout(min($timeout, $remaining), $callback);
              } catch (ExpectationFailedException) {
                  //
