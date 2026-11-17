@@ -37,7 +37,7 @@ Unknown keys, a missing key and a wrong type fail the run with the file named, s
 ## Notes on current rows
 
 
-- `2-pestphp-pest-1763.json`: `pestphp/pest#1763`, an open report that test file order affects the reliability of later browser tests, related to the hardcoded per-attempt timeout the per-attempt timeout patch works around. When it closes, check whether the fix removes the need for that patch (`UAMS-Web/patches-pest-plugin-browser#2`).
+- `2-pestphp-pest-plugin-browser-276.json`: `pestphp/pest-plugin-browser#276`, the merged pull request whose two `src` hunks the per-attempt timeout patch carries. `released: true` comments when a release on the `5.x` line contains the merge commit; then drop the patch (`UAMS-Web/patches-pest-plugin-browser#2`). It carries no `composer` key for the reason below.
 - `3-pestphp-pest-1754.json`: `pestphp/pest#1754`, the open report that `playwright run-server` is never killed where `/bin/sh` is dash, which the no-shell server patch works around. When it closes, check whether the fix removes the need for that patch (`UAMS-Web/patches-pest-plugin-browser#3`).
 
 No row carries `composer`: the workflow reads the pin from `composer.lock`, and this package is a library that commits none (it pins `pestphp/pest-plugin-browser` in `composer.json`), so the Packagist signal would fail the run rather than report.
